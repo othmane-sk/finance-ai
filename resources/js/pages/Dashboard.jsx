@@ -290,7 +290,7 @@ export default function Dashboard({ currency }) {
         {/* HEALTH SCORE CARD (Right) */}
         <div className="lg:col-span-4 p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between items-center text-center">
           <div className="w-full flex justify-between items-center mb-2">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Financial Health</h3>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-450">Financial Health</h3>
             <span className="text-[10px] bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded-full font-bold">Stable</span>
           </div>
 
@@ -307,7 +307,7 @@ export default function Dashboard({ currency }) {
 
           <div className="space-y-1">
             <h4 className="text-xs font-extrabold text-slate-800 dark:text-slate-200">Excellent Budgeting Score</h4>
-            <p className="text-[10px] text-slate-400 max-w-[200px] mx-auto leading-relaxed">
+            <p className="text-[10px] text-slate-600 dark:text-slate-400 max-w-[200px] mx-auto leading-relaxed">
               Your debt ratios and monthly savings allocations look perfectly balanced this term.
             </p>
           </div>
@@ -319,7 +319,7 @@ export default function Dashboard({ currency }) {
         {/* Balance */}
         <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between min-h-[110px]">
           <div className="flex justify-between items-start">
-            <span className="text-[10px] font-bold text-slate-450 dark:text-slate-550 uppercase tracking-wider">Total Balance</span>
+            <span className="text-[10px] font-bold text-slate-650 dark:text-slate-400 uppercase tracking-wider">Total Balance</span>
             <span className="p-1.5 rounded-lg bg-blue-500/10 text-blue-500"><Wallet className="w-4 h-4" /></span>
           </div>
           <div className="mt-2 space-y-1">
@@ -335,7 +335,7 @@ export default function Dashboard({ currency }) {
         {/* Income */}
         <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between min-h-[110px]">
           <div className="flex justify-between items-start">
-            <span className="text-[10px] font-bold text-slate-450 dark:text-slate-550 uppercase tracking-wider">Total Income</span>
+            <span className="text-[10px] font-bold text-slate-650 dark:text-slate-400 uppercase tracking-wider">Total Income</span>
             <span className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-500"><ArrowDownLeft className="w-4 h-4" /></span>
           </div>
           <div className="mt-2 space-y-1">
@@ -351,7 +351,7 @@ export default function Dashboard({ currency }) {
         {/* Expenses */}
         <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between min-h-[110px]">
           <div className="flex justify-between items-start">
-            <span className="text-[10px] font-bold text-slate-450 dark:text-slate-550 uppercase tracking-wider">Total Expenses</span>
+            <span className="text-[10px] font-bold text-slate-650 dark:text-slate-400 uppercase tracking-wider">Total Expenses</span>
             <span className="p-1.5 rounded-lg bg-rose-500/10 text-rose-500"><ArrowUpRightIcon className="w-4 h-4" /></span>
           </div>
           <div className="mt-2 space-y-1">
@@ -367,7 +367,7 @@ export default function Dashboard({ currency }) {
         {/* Savings */}
         <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between min-h-[110px]">
           <div className="flex justify-between items-start">
-            <span className="text-[10px] font-bold text-slate-450 dark:text-slate-550 uppercase tracking-wider">Savings Rate</span>
+            <span className="text-[10px] font-bold text-slate-650 dark:text-slate-400 uppercase tracking-wider">Savings Rate</span>
             <span className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-500"><PiggyBank className="w-4 h-4" /></span>
           </div>
           <div className="mt-2 space-y-1">
@@ -386,7 +386,7 @@ export default function Dashboard({ currency }) {
         
         {/* Cash Flow Line Chart */}
         <div className="lg:col-span-8 p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 flex flex-col justify-between min-h-[300px]">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-450 dark:text-slate-500">Cash Flow History</h3>
+          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Cash Flow History</h3>
           <div className="h-60">
             <ChartLine data={lineChartData} options={lineChartOptions} />
           </div>
@@ -394,11 +394,11 @@ export default function Dashboard({ currency }) {
 
         {/* Expense Category breakdown */}
         <div className="lg:col-span-4 p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 flex flex-col justify-between min-h-[300px]">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-450 dark:text-slate-500">Expenses Breakdown</h3>
+          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Expenses Breakdown</h3>
           <div className="h-44 relative flex items-center justify-center">
             <ChartDoughnut data={donutData} options={donutOptions} />
           </div>
-          <div className="text-center text-[10px] text-slate-400 font-semibold">
+          <div className="text-center text-[10px] text-slate-500 dark:text-slate-400 font-semibold">
             Category distribution by percentage.
           </div>
         </div>
