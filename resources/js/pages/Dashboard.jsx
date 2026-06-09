@@ -151,6 +151,19 @@ export default function Dashboard({ currency }) {
 
   const { kpis } = data;
 
+  // Calculate dynamic financial health score
+  let healthScore = 75; // baseline
+  const burnRate = kpis.monthly_income > 0 ? (kpis.monthly_expense / kpis.monthly_income) * 100 : 0;
+  if (kpis.monthly_income > 0) {
+    if (burnRate <= 50) healthScore += 15;
+    else if (burnRate <= 75) healthScore += 5;
+    else healthScore -= 15;
+  } else {
+    healthScore = 0;
+  }
+  healthScore = Math.max(0, Math.min(100, healthScore));
+  const strokeDashoffset = 251.2 - (251.2 * healthScore) / 100;
+
   // Chart configuration for Cash Flow Line Chart
   const lineChartData = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
@@ -243,7 +256,7 @@ export default function Dashboard({ currency }) {
         <div className="lg:col-span-8 p-8 rounded-3xl bg-gradient-to-tr from-slate-900 via-slate-850 to-indigo-950 text-white flex flex-col justify-between min-h-[200px] shadow-sm relative overflow-hidden border border-slate-800">
           <div className="space-y-2 z-10">
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight font-display">
-              Bienvenue, {userName}
+              {t('welcome') || 'Welcome'}, {userName}
             </h1>
             <p className="text-slate-400 text-xs sm:text-sm font-medium max-w-md leading-relaxed">
               Your financial portfolio is fully optimized. Track monthly investments and budgets from a single clean dashboard panel.
@@ -285,10 +298,10 @@ export default function Dashboard({ currency }) {
             {/* Animated Circular Progress ring */}
             <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
               <circle cx="50" cy="50" r="40" stroke="rgba(226, 232, 240, 0.3)" strokeWidth="8" fill="transparent" />
-              <circle cx="50" cy="50" r="40" stroke="#10B981" strokeWidth="8" fill="transparent" strokeDasharray="251.2" strokeDashoffset="45.2" className="transition-all duration-1000 ease-out" />
+              <circle cx="50" cy="50" r="40" stroke="#10B981" strokeWidth="8" fill="transparent" strokeDasharray="251.2" strokeDashoffset={strokeDashoffset} className="transition-all duration-1000 ease-out" />
             </svg>
             <div className="absolute text-center">
-              <span className="text-2xl font-black text-slate-900 dark:text-white">82%</span>
+              <span className="text-2xl font-black text-slate-900 dark:text-white">{healthScore}%</span>
             </div>
           </div>
 

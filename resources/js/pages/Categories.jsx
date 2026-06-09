@@ -151,32 +151,35 @@ export default function Categories() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Expenses List */}
         <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4">
           <h2 className="text-sm font-bold uppercase tracking-wider text-rose-500">Expenses</h2>
-          <div className="space-y-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {categories.filter(c => c.type === 'expense').map(c => (
-              <div key={c.id} className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800/80 hover:border-slate-200 dark:hover:border-slate-700 transition-all">
-                <div className="flex items-center space-x-3.5">
-                  <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-900 flex items-center justify-center border border-slate-200/40 dark:border-slate-800">
+              <div key={c.id} className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-750 transition-all flex flex-col justify-between h-32 hover:scale-[1.02] shadow-sm">
+                <div className="flex justify-between items-start">
+                  <div className="w-9 h-9 rounded-xl bg-white dark:bg-slate-900 flex items-center justify-center border border-slate-100 dark:border-slate-850">
                     {renderIcon(c.icon, c.color)}
                   </div>
-                  <span className="text-xs font-semibold text-slate-900 dark:text-white">{c.name}</span>
+                  <div className="flex items-center space-x-0.5">
+                    <button
+                      onClick={() => handleOpenEditModal(c)}
+                      className="p-1 rounded hover:bg-white dark:hover:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 transition-colors"
+                    >
+                      <Edit3 className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(c.id)}
+                      className="p-1 rounded hover:bg-rose-500/10 text-slate-500 hover:text-rose-500 transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-1.5">
-                  <button
-                    onClick={() => handleOpenEditModal(c)}
-                    className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition-colors"
-                  >
-                    <Edit3 className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(c.id)}
-                    className="p-1.5 rounded hover:bg-rose-500/10 text-slate-400 hover:text-rose-500 transition-colors"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
+                <div>
+                  <span className="text-xs font-bold text-slate-850 dark:text-white block truncate">{c.name}</span>
+                  <span className="text-[9px] uppercase tracking-wider text-slate-500 font-extrabold block mt-0.5">Expense</span>
                 </div>
               </div>
             ))}
@@ -186,28 +189,31 @@ export default function Categories() {
         {/* Income List */}
         <div className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-4">
           <h2 className="text-sm font-bold uppercase tracking-wider text-emerald-500">Incomes</h2>
-          <div className="space-y-2.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
             {categories.filter(c => c.type === 'income').map(c => (
-              <div key={c.id} className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800/80 hover:border-slate-200 dark:hover:border-slate-700 transition-all">
-                <div className="flex items-center space-x-3.5">
-                  <div className="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-900 flex items-center justify-center border border-slate-200/40 dark:border-slate-800">
+              <div key={c.id} className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-750 transition-all flex flex-col justify-between h-32 hover:scale-[1.02] shadow-sm">
+                <div className="flex justify-between items-start">
+                  <div className="w-9 h-9 rounded-xl bg-white dark:bg-slate-900 flex items-center justify-center border border-slate-100 dark:border-slate-850">
                     {renderIcon(c.icon, c.color)}
                   </div>
-                  <span className="text-xs font-semibold text-slate-900 dark:text-white">{c.name}</span>
+                  <div className="flex items-center space-x-0.5">
+                    <button
+                      onClick={() => handleOpenEditModal(c)}
+                      className="p-1 rounded hover:bg-white dark:hover:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-slate-200 transition-colors"
+                    >
+                      <Edit3 className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(c.id)}
+                      className="p-1 rounded hover:bg-rose-500/10 text-slate-500 hover:text-rose-500 transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-1.5">
-                  <button
-                    onClick={() => handleOpenEditModal(c)}
-                    className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-200 transition-colors"
-                  >
-                    <Edit3 className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(c.id)}
-                    className="p-1.5 rounded hover:bg-rose-500/10 text-slate-400 hover:text-rose-500 transition-colors"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
+                <div>
+                  <span className="text-xs font-bold text-slate-850 dark:text-white block truncate">{c.name}</span>
+                  <span className="text-[9px] uppercase tracking-wider text-slate-500 font-extrabold block mt-0.5">Income</span>
                 </div>
               </div>
             ))}

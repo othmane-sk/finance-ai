@@ -13,6 +13,7 @@ import {
   Calendar
 } from 'lucide-react';
 import api from '../services/api';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Transactions({ currency }) {
   const [activeTab, setActiveTab] = useState('expense'); // 'expense' or 'income'

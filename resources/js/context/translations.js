@@ -1,6 +1,6 @@
 export const translations = {
   en: {
-    welcome: "Welcome Mr. Smith",
+    welcome: "Welcome",
     subtitle: "Manage your finance with clarity and control",
     add_income: "Add income",
     add_expense: "Add expense",
@@ -70,7 +70,7 @@ export const translations = {
     burn_rate: "Burn Rate",
   },
   fr: {
-    welcome: "Bienvenue M. Smith",
+    welcome: "Bienvenue",
     subtitle: "Gérez vos finances avec clarté et contrôle",
     add_income: "Ajouter un revenu",
     add_expense: "Ajouter une dépense",
@@ -140,7 +140,7 @@ export const translations = {
     burn_rate: "Taux de consommation",
   },
   ar: {
-    welcome: "مرحباً بك سيد سميث",
+    welcome: "مرحباً",
     subtitle: "إدارة أموالك بوضوح وتحكم",
     add_income: "إضافة دخل",
     add_expense: "إضافة مصاريف",
