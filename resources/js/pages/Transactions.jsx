@@ -167,46 +167,47 @@ export default function Transactions({ currency }) {
   };
 
   const filteredCategoriesForDropdown = categories.filter(c => c.type === activeTab);
+  const { t } = useLanguage ? useLanguage() : { t: (k) => k };
 
   return (
     <div className="space-y-6">
       {/* Header and Toggle */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-xl font-bold tracking-tight font-display">Transaction Logs</h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400">Record and structure cashflow items.</p>
+          <h1 className="text-xl font-bold tracking-tight font-display text-slate-900 dark:text-white">Transaction Logs</h1>
+          <p className="text-xs text-slate-700 dark:text-slate-350">Record and structure cashflow items.</p>
         </div>
         <div className="flex items-center space-x-3 w-full sm:w-auto">
           {/* Tab selector */}
-          <div className="flex bg-slate-200/50 dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 p-1 rounded-2xl w-full sm:w-48">
+          <div className="flex bg-slate-200/50 dark:bg-slate-905 border border-slate-200/60 dark:border-slate-800 p-1 rounded-2xl w-full sm:w-48">
             <button
               onClick={() => { setActiveTab('expense'); setCategoryId(''); }}
-              className={`flex-1 py-2 text-center text-xs font-semibold rounded-xl transition-all ${
+              className={`flex-1 py-2 text-center text-xs font-semibold rounded-xl transition-all cursor-pointer ${
                 activeTab === 'expense'
-                  ? 'bg-white dark:bg-slate-800 text-rose-500 shadow-sm'
-                  : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-300'
+                  ? 'bg-white dark:bg-slate-800 text-rose-600 shadow-sm'
+                  : 'text-slate-700 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
               }`}
             >
-              Expenses
+              {t('add_expense') || 'Expenses'}
             </button>
             <button
               onClick={() => { setActiveTab('income'); setCategoryId(''); }}
-              className={`flex-1 py-2 text-center text-xs font-semibold rounded-xl transition-all ${
+              className={`flex-1 py-2 text-center text-xs font-semibold rounded-xl transition-all cursor-pointer ${
                 activeTab === 'income'
-                  ? 'bg-white dark:bg-slate-800 text-emerald-500 shadow-sm'
-                  : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-300'
+                  ? 'bg-white dark:bg-slate-800 text-emerald-600 shadow-sm'
+                  : 'text-slate-700 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
               }`}
             >
-              Incomes
+              {t('add_income') || 'Incomes'}
             </button>
           </div>
           
           <button
             onClick={handleOpenCreateModal}
-            className="flex items-center justify-center space-x-1.5 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-lg shadow-indigo-600/15 whitespace-nowrap transition-all"
+            className="flex items-center justify-center space-x-1.5 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-lg shadow-indigo-600/15 whitespace-nowrap transition-all cursor-pointer"
           >
             <Plus className="w-4 h-4" />
-            <span>Add Log</span>
+            <span>{activeTab === 'expense' ? (t('add_expense') || 'Add Expense') : (t('add_income') || 'Add Income')}</span>
           </button>
         </div>
       </div>
@@ -215,13 +216,13 @@ export default function Transactions({ currency }) {
       <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 shadow-sm">
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3.5 top-3 w-4 h-4 text-slate-500" />
           <input
             type="text"
             placeholder="Search description..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 text-slate-800 dark:text-white text-xs placeholder-slate-400 focus:outline-none"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-855 text-slate-900 dark:text-white text-xs placeholder-slate-500 focus:outline-none"
           />
         </div>
 
@@ -229,7 +230,7 @@ export default function Transactions({ currency }) {
         <select
           value={categoryId}
           onChange={(e) => setCategoryId(e.target.value)}
-          className="px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 text-slate-800 dark:text-slate-200 text-xs focus:outline-none"
+          className="px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-200 text-xs focus:outline-none"
         >
           <option value="">All Categories</option>
           {filteredCategoriesForDropdown.map((c) => (
@@ -243,14 +244,14 @@ export default function Transactions({ currency }) {
           placeholder="Start Date"
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
-          className="px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 text-slate-800 dark:text-white text-xs focus:outline-none"
+          className="px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs focus:outline-none"
         />
         <input
           type="date"
           placeholder="End Date"
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
-          className="px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-850 text-slate-800 dark:text-white text-xs focus:outline-none"
+          className="px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-955 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs focus:outline-none"
         />
       </div>
 
@@ -259,7 +260,7 @@ export default function Transactions({ currency }) {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-[10px] font-bold uppercase tracking-wider text-slate-700 dark:text-slate-350">
                 <th className="py-4 px-6">Category</th>
                 <th className="py-4 px-6">Description</th>
                 <th className="py-4 px-6">Date</th>
@@ -276,7 +277,7 @@ export default function Transactions({ currency }) {
                 </tr>
               ) : transactions.length === 0 ? (
                 <tr>
-                  <td colSpan="5" className="py-10 text-center text-slate-400">
+                  <td colSpan="5" className="py-10 text-center text-slate-500 dark:text-slate-400">
                     No transactions found matching the filter options.
                   </td>
                 </tr>
@@ -287,22 +288,22 @@ export default function Transactions({ currency }) {
                       <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: tx.category?.color || '#cbd5e1' }} />
                       <span className="text-slate-900 dark:text-white">{tx.category?.name || 'Uncategorized'}</span>
                     </td>
-                    <td className="py-4 px-6 text-slate-650 dark:text-slate-350">{tx.description || '-'}</td>
-                    <td className="py-4 px-6 text-slate-400 font-normal">{tx.entry_date}</td>
-                    <td className={`py-4 px-6 text-right font-bold ${activeTab === 'expense' ? 'text-rose-500' : 'text-emerald-500'}`}>
+                    <td className="py-4 px-6 text-slate-800 dark:text-slate-200">{tx.description || '-'}</td>
+                    <td className="py-4 px-6 text-slate-600 dark:text-slate-350 font-normal">{tx.entry_date}</td>
+                    <td className={`py-4 px-6 text-right font-bold ${activeTab === 'expense' ? 'text-rose-600' : 'text-emerald-600'}`}>
                       {activeTab === 'expense' ? '-' : '+'}{symbol}{parseFloat(tx.amount).toFixed(2)}
                     </td>
                     <td className="py-4 px-6 text-center">
                       <div className="flex justify-center items-center space-x-1.5">
                         <button
                           onClick={() => handleOpenEditModal(tx)}
-                          className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-slate-200"
+                          className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500 hover:text-slate-200"
                         >
                           <Edit3 className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => handleDelete(tx.id)}
-                          className="p-1.5 rounded hover:bg-rose-500/10 text-slate-400 hover:text-rose-500"
+                          className="p-1.5 rounded hover:bg-rose-500/10 text-slate-500 hover:text-rose-500"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -318,7 +319,7 @@ export default function Transactions({ currency }) {
         {/* Pagination bar */}
         {pagination.last_page > 1 && (
           <div className="px-6 py-4 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-200 dark:border-slate-800 flex justify-between items-center text-xs">
-            <span className="text-slate-500 dark:text-slate-400">
+            <span className="text-slate-700 dark:text-slate-300">
               Page {pagination.current_page} of {pagination.last_page}
             </span>
             <div className="flex space-x-2">

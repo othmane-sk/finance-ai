@@ -228,6 +228,7 @@ class ChatbotController extends Controller
         $intent = $parsed['intent'];
         $params = $parsed['params'];
         $currency = $user->setting?->currency ?? 'USD';
+        $lang = $user->language ?? 'en';
 
         $now = Carbon::now();
         $startOfMonth = $now->copy()->startOfMonth();
@@ -245,25 +246,48 @@ class ChatbotController extends Controller
         switch ($intent) {
             case 'savings_time':
                 $target = $params['target'];
-                // Use input income, or user's real monthly income, or fallback $3,000
                 $income = $params['income'] ?: ($userMonthlyIncome ?: 3000.0);
-                
-                // Calculate dynamic monthly saving: 25% of income
                 $savingsRate = 0.25;
                 $monthlySaving = $income * $savingsRate;
                 $monthsNeeded = $target / $monthlySaving;
                 
-                $answer = sprintf(
-                    "To save a total of %s %s with a monthly income of %s %s, assuming a healthy 25%% savings rate (%s %s saved/month), it will take you approximately %.1f months (or about %.0f days).",
-                    $currency,
-                    number_format($target),
-                    $currency,
-                    number_format($income),
-                    $currency,
-                    number_format($monthlySaving),
-                    $monthsNeeded,
-                    $monthsNeeded * 30.4
-                );
+                if ($lang === 'fr') {
+                    $answer = sprintf(
+                        "Pour épargner un total de %s %s avec un revenu mensuel de %s %s, en supposant un taux d'épargne sain de 25%% (%s %s épargnés/mois), il vous faudra environ %.1f mois (soit environ %.0f jours).",
+                        $currency,
+                        number_format($target),
+                        $currency,
+                        number_format($income),
+                        $currency,
+                        number_format($monthlySaving),
+                        $monthsNeeded,
+                        $monthsNeeded * 30.4
+                    );
+                } elseif ($lang === 'ar') {
+                    $answer = sprintf(
+                        "لتوفير ما مجموعه %s %s مع دخل شهري قدره %s %s، وبافتراض معدل ادخار صحي بنسبة 25%% (%s %s تم توفيره/الشهر)، سوف يستغرق الأمر حوالي %.1f شهراً (أو حوالي %.0f يوماً).",
+                        $currency,
+                        number_format($target),
+                        $currency,
+                        number_format($income),
+                        $currency,
+                        number_format($monthlySaving),
+                        $monthsNeeded,
+                        $monthsNeeded * 30.4
+                    );
+                } else {
+                    $answer = sprintf(
+                        "To save a total of %s %s with a monthly income of %s %s, assuming a healthy 25%% savings rate (%s %s saved/month), it will take you approximately %.1f months (or about %.0f days).",
+                        $currency,
+                        number_format($target),
+                        $currency,
+                        number_format($income),
+                        $currency,
+                        number_format($monthlySaving),
+                        $monthsNeeded,
+                        $monthsNeeded * 30.4
+                    );
+                }
 
                 return [
                     'answer' => $answer,
@@ -280,13 +304,27 @@ class ChatbotController extends Controller
             case 'budget_check':
                 $budgets = Budget::where('user_id', $user->id)->with('category')->get();
                 if ($budgets->isEmpty()) {
+                    if ($lang === 'fr') {
+                        $answer = "Vous n'avez aucun budget configuré pour ce mois. Je vous conseille d'en créer un pour les 'Courses' ou les 'Restaurants' dans la section Budgets pour contrôler vos dépenses.";
+                    } elseif ($lang === 'ar') {
+                        $answer = "ليس لديك أي ميزانيات محددة لهذا الشهر. أنصحك بإنشاء ميزانية للبقالة أو المطاعم في قسم الميزانيات للتحكم في إنفاقك.";
+                    } else {
+                        $answer = "You don't have any budgets configured for this month. I recommend creating one for 'Groceries' or 'Dining Out' in the Budgets section to control your spending.";
+                    }
                     return [
-                        'answer' => "You don't have any budgets configured for this month. I recommend creating one for 'Groceries' or 'Dining Out' in the Budgets section to control your spending.",
+                        'answer' => $answer,
                         'data' => ['intent' => 'budget_check', 'budgets_count' => 0]
                     ];
                 }
 
-                $lines = ["Here is a summary of your active budgets:"];
+                if ($lang === 'fr') {
+                    $lines = ["Voici un résumé de vos budgets actifs :"];
+                } elseif ($lang === 'ar') {
+                    $lines = ["إليك ملخص لميزانياتك النشطة:"];
+                } else {
+                    $lines = ["Here is a summary of your active budgets:"];
+                }
+
                 $exceeded = 0;
                 foreach ($budgets as $b) {
                     $spent = Expense::where('user_id', $user->id)
@@ -295,25 +333,66 @@ class ChatbotController extends Controller
                         ->sum('amount');
                     
                     $percent = $b->amount > 0 ? ($spent / $b->amount) * 100 : 0;
-                    $status = $spent > $b->amount ? "EXCEEDED" : "Healthy";
-                    if ($spent > $b->amount) $exceeded++;
+                    
+                    if ($spent > $b->amount) {
+                        $status = $lang === 'fr' ? "DÉPASSÉ" : ($lang === 'ar' ? "متجاوز" : "EXCEEDED");
+                        $exceeded++;
+                    } else {
+                        $status = $lang === 'fr' ? "Sain" : ($lang === 'ar' ? "سليم" : "Healthy");
+                    }
 
-                    $lines[] = sprintf(
-                        "- *%s*: Spent %s %.2f / Limit %s %.2f (%.1f%% utilized) - %s",
-                        $b->category ? $b->category->name : 'Uncategorized',
-                        $currency,
-                        $spent,
-                        $currency,
-                        $b->amount,
-                        $percent,
-                        $status
-                    );
+                    if ($lang === 'fr') {
+                        $lines[] = sprintf(
+                            "- *%s* : Dépensé %s %.2f / Limite %s %.2f (%.1f%% utilisé) - %s",
+                            $b->category ? $b->category->name : 'Non catégorisé',
+                            $currency,
+                            $spent,
+                            $currency,
+                            $b->amount,
+                            $percent,
+                            $status
+                        );
+                    } elseif ($lang === 'ar') {
+                        $lines[] = sprintf(
+                            "- *%s*: تم إنفاق %s %.2f / الحد %s %.2f (تم استغلال %.1f%%) - %s",
+                            $b->category ? $b->category->name : 'غير محدد',
+                            $currency,
+                            $spent,
+                            $currency,
+                            $b->amount,
+                            $percent,
+                            $status
+                        );
+                    } else {
+                        $lines[] = sprintf(
+                            "- *%s*: Spent %s %.2f / Limit %s %.2f (%.1f%% utilized) - %s",
+                            $b->category ? $b->category->name : 'Uncategorized',
+                            $currency,
+                            $spent,
+                            $currency,
+                            $b->amount,
+                            $percent,
+                            $status
+                        );
+                    }
                 }
 
                 if ($exceeded > 0) {
-                    $lines[] = "\nWarning: You have exceeded $exceeded of your budget caps. Pause non-essential purchases.";
+                    if ($lang === 'fr') {
+                        $lines[] = sprintf("\nAttention : Vous avez dépassé %d de vos plafonds budgétaires. Limitez les achats non essentiels.", $exceeded);
+                    } elseif ($lang === 'ar') {
+                        $lines[] = sprintf("\nتحذير: لقد تجاوزت %d من حدود ميزانيتك. يرجى إيقاف المشتريات غير الضرورية.", $exceeded);
+                    } else {
+                        $lines[] = sprintf("\nWarning: You have exceeded %d of your budget caps. Pause non-essential purchases.", $exceeded);
+                    }
                 } else {
-                    $lines[] = "\nAll your budget caps are currently healthy. Keep up the good work!";
+                    if ($lang === 'fr') {
+                        $lines[] = "\nTous vos plafonds budgétaires sont actuellement sains. Continuez ainsi !";
+                    } elseif ($lang === 'ar') {
+                        $lines[] = "\nجميع حدود ميزانيتك حالياً في وضع جيد. واصل العمل الرائع!";
+                    } else {
+                        $lines[] = "\nAll your budget caps are currently healthy. Keep up the good work!";
+                    }
                 }
 
                 return [
@@ -335,14 +414,29 @@ class ChatbotController extends Controller
                     ->get();
 
                 if ($expenses->isEmpty()) {
+                    if ($lang === 'fr') {
+                        $answer = "Vous n'avez aucune dépense enregistrée pour ce mois. Vous êtes dans le vert !";
+                    } elseif ($lang === 'ar') {
+                        $answer = "ليس لديك أي مصاريف مسجلة لهذا الشهر. أنت في المنطقة الآمنة!";
+                    } else {
+                        $answer = "You have no expenses recorded for this month. You're in the green!";
+                    }
                     return [
-                        'answer' => "You have no expenses recorded for this month. You're in the green!",
+                        'answer' => $answer,
                         'data' => ['intent' => 'expense_breakdown', 'expenses_total' => 0]
                     ];
                 }
 
                 $total = $expenses->sum('total');
-                $lines = [sprintf("Your total expenses for this month are %s %s. Here is the breakdown:", $currency, number_format($total, 2))];
+                
+                if ($lang === 'fr') {
+                    $lines = [sprintf("Le total de vos dépenses pour ce mois est de %s %s. Voici la répartition :", $currency, number_format($total, 2))];
+                } elseif ($lang === 'ar') {
+                    $lines = [sprintf("إجمالي نفقاتك لهذا الشهر هو %s %s. إليك التفاصيل:", $currency, number_format($total, 2))];
+                } else {
+                    $lines = [sprintf("Your total expenses for this month are %s %s. Here is the breakdown:", $currency, number_format($total, 2))];
+                }
+
                 foreach ($expenses as $e) {
                     $pct = ($e->total / $total) * 100;
                     $lines[] = sprintf("- *%s*: %s %s (%.1f%%)", $e->name, $currency, number_format($e->total, 2), $pct);
@@ -357,8 +451,7 @@ class ChatbotController extends Controller
                 ];
 
             case 'financial_health':
-                // Compute Financial Score
-                $score = 75; // Baseline
+                $score = 75;
                 $netBalance = $userMonthlyIncome - $userMonthlyExpense;
                 $burnRate = $userMonthlyIncome > 0 ? ($userMonthlyExpense / $userMonthlyIncome) * 100 : 0;
                 
@@ -371,21 +464,67 @@ class ChatbotController extends Controller
                 $activeGoalsCount = SavingsGoal::where('user_id', $user->id)->where('status', 'active')->count();
                 $score = max(0, min(100, $score + ($activeGoalsCount * 2)));
 
-                $answer = sprintf(
-                    "Your current Financial Health Score is %d/100.\n" .
-                    "- Net monthly balance: %s %s (Incomes: %s %s | Expenses: %s %s)\n" .
-                    "- Burn rate: %.1f%% of earnings spent.\n" .
-                    "Recommendation: %s",
-                    $score,
-                    $currency,
-                    number_format($netBalance, 2),
-                    $currency,
-                    number_format($userMonthlyIncome, 2),
-                    $currency,
-                    number_format($userMonthlyExpense, 2),
-                    $burnRate,
-                    $burnRate > 80 ? "Your burn rate is high. Consider setting tight limits on discretionary spendings like Dining Out or Entertainment." : "Your finances look solid. You can allocate extra savings to your goals."
-                );
+                if ($lang === 'fr') {
+                    $advice = $burnRate > 80 
+                        ? "Votre taux de consommation est élevé. Pensez à fixer des limites strictes sur les dépenses discrétionnaires comme les Restaurants ou les Sorties." 
+                        : "Vos finances semblent solides. Vous pouvez allouer de l'épargne supplémentaire à vos objectifs.";
+                    
+                    $answer = sprintf(
+                        "Votre score de santé financière actuel est de %d/100.\n" .
+                        "- Solde mensuel net : %s %s (Revenus : %s %s | Dépenses : %s %s)\n" .
+                        "- Taux de consommation : %.1f%% des revenus dépensés.\n" .
+                        "Recommandation : %s",
+                        $score,
+                        $currency,
+                        number_format($netBalance, 2),
+                        $currency,
+                        number_format($userMonthlyIncome, 2),
+                        $currency,
+                        number_format($userMonthlyExpense, 2),
+                        $burnRate,
+                        $advice
+                    );
+                } elseif ($lang === 'ar') {
+                    $advice = $burnRate > 80 
+                        ? "معدل الإنفاق لديك مرتفع. فكر في وضع حدود صارمة على الإنفاق الاختياري مثل المطاعم أو الترفيه." 
+                        : "أمورك المالية تبدو صلبة ومستقرة. يمكنك تخصيc مدخرات إضافية لأهدافك.";
+                    
+                    $answer = sprintf(
+                        "درجة صحتك المالية الحالية هي %d/100.\n" .
+                        "- صافي الرصيد الشهري: %s %s (الدخل: %s %s | المصاريف: %s %s)\n" .
+                        "- معدل الإنفاق: %.1f%% من الأرباح المستهلكة.\n" .
+                        "التوصية: %s",
+                        $score,
+                        $currency,
+                        number_format($netBalance, 2),
+                        $currency,
+                        number_format($userMonthlyIncome, 2),
+                        $currency,
+                        number_format($userMonthlyExpense, 2),
+                        $burnRate,
+                        $advice
+                    );
+                } else {
+                    $advice = $burnRate > 80 
+                        ? "Your burn rate is high. Consider setting tight limits on discretionary spendings like Dining Out or Entertainment." 
+                        : "Your finances look solid. You can allocate extra savings to your goals.";
+                    
+                    $answer = sprintf(
+                        "Your current Financial Health Score is %d/100.\n" .
+                        "- Net monthly balance: %s %s (Incomes: %s %s | Expenses: %s %s)\n" .
+                        "- Burn rate: %.1f%% of earnings spent.\n" .
+                        "Recommendation: %s",
+                        $score,
+                        $currency,
+                        number_format($netBalance, 2),
+                        $currency,
+                        number_format($userMonthlyIncome, 2),
+                        $currency,
+                        number_format($userMonthlyExpense, 2),
+                        $burnRate,
+                        $advice
+                    );
+                }
 
                 return [
                     'answer' => $answer,
@@ -398,12 +537,27 @@ class ChatbotController extends Controller
                 ];
 
             default:
-                return [
-                    'answer' => "Hi there! I am your deterministic Finance AI Assistant. I can help you with:\n" .
+                if ($lang === 'fr') {
+                    $answer = "Bonjour ! Je suis votre assistant financier IA. Je peux vous aider à :\n" .
+                        "1. Calculer la durée d'épargne (ex: 'Combien de temps pour économiser 10000 avec 4000 de salaire')\n" .
+                        "2. Analyser vos limites budgétaires (ex: 'afficher mes budgets' ou 'vérifier mes limites')\n" .
+                        "3. Inspecter la répartition des dépenses (ex: 'analyser mes dépenses')\n" .
+                        "4. Évaluer votre score financier (ex: 'analyser ma santé financière')";
+                } elseif ($lang === 'ar') {
+                    $answer = "مرحباً! أنا مساعدك المالي بالذكاء الاصطناعي. يمكنني مساعدتك في:\n" .
+                        "1. حساب مدة الادخار (مثال: 'كم من الوقت لتوفير 10000 مع دخل 4000')\n" .
+                        "2. تحليل حدود ميزانيتك (مثال: 'عرض ميزانياتي')\n" .
+                        "3. فحص توزيع نفقاتك (مثال: 'تفاصيل مصاريفي')\n" .
+                        "4. مراجعة درجتك المالية العامة (مثال: 'درجة صحتي المالية')";
+                } else {
+                    $answer = "Hi there! I am your deterministic Finance AI Assistant. I can help you with:\n" .
                         "1. Calculating savings durations (e.g. 'How long to save 10,000 with 4,000 income')\n" .
                         "2. Analyzing your budget constraints (e.g. 'Show my budgets' or 'check limits')\n" .
                         "3. Inspecting spending distribution (e.g. 'breakdown my expenses')\n" .
-                        "4. Reviewing your general financial score (e.g. 'check my financial health')",
+                        "4. Reviewing your general financial score (e.g. 'check my financial health')";
+                }
+                return [
+                    'answer' => $answer,
                     'data' => ['intent' => 'generic_help']
                 ];
         }

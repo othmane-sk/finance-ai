@@ -8,7 +8,7 @@ import api from '../services/api';
 import {
   Home,
   LayoutGrid,
-  Wallet,
+  Tag,
   Globe,
   PieChart,
   Settings,
@@ -16,7 +16,6 @@ import {
   Moon,
   LogOut,
   Sparkles,
-  TrendingUp,
   BarChart3,
   FileText,
   Brain
@@ -32,14 +31,13 @@ export default function DashboardLayout({ user, onLogout, currency, theme: curre
   const menuItems = [
     { name: t('dashboard') || 'Dashboard', path: '/dashboard', icon: Home },
     { name: t('transactions') || 'Transactions', path: '/transactions', icon: LayoutGrid },
-    { name: t('expenses') || 'Expenses', path: '/expenses', icon: Wallet },
-    { name: t('income') || 'Incomes', path: '/incomes', icon: TrendingUp },
+    { name: t('categories') || 'Categories', path: '/categories', icon: Tag },
     { name: t('budgets') || 'Budgets', path: '/budgets', icon: PieChart },
     { name: t('savings') || 'Savings Goals', path: '/savings', icon: Globe },
     { name: t('insights') || 'Financial Insights', path: '/insights', icon: Sparkles },
-    { name: 'Analytics', path: '/analytics', icon: BarChart3 },
-    { name: 'Reports', path: '/reports', icon: FileText },
-    { name: 'AI Chatbot', path: '/chatbot', icon: Brain },
+    { name: t('analytics') || 'Analytics', path: '/analytics', icon: BarChart3 },
+    { name: t('reports') || 'Reports', path: '/reports', icon: FileText },
+    { name: t('chatbot') || 'AI Chatbot', path: '/chatbot', icon: Brain },
     { name: t('settings') || 'Settings', path: '/settings', icon: Settings },
   ];
 
@@ -89,7 +87,7 @@ export default function DashboardLayout({ user, onLogout, currency, theme: curre
                 className={`flex items-center space-x-3 px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 ${
                   isActive
                     ? 'bg-blue-600 text-white shadow-md shadow-blue-500/10'
-                    : 'text-slate-650 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/60'
                 }`}
               >
                 <Icon className="w-4 h-4 flex-shrink-0" />
@@ -123,7 +121,7 @@ export default function DashboardLayout({ user, onLogout, currency, theme: curre
           {/* Right Area Controls */}
           <div className="flex items-center space-x-4">
             {/* Currency Selector */}
-            <div className="relative flex items-center text-xs font-bold text-slate-600 dark:text-slate-350">
+            <div className="relative flex items-center text-xs font-bold text-slate-700 dark:text-slate-300">
               <select
                 value={selectedCurrency}
                 onChange={handleCurrencyChange}
@@ -138,7 +136,7 @@ export default function DashboardLayout({ user, onLogout, currency, theme: curre
             {/* Language Selector */}
             <div className="relative group">
               <button
-                className="px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 text-xs font-bold uppercase text-slate-605 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-750 transition-colors"
+                className="px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 text-xs font-bold uppercase text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-750 transition-colors"
               >
                 {language === 'en' ? 'English' : language === 'fr' ? 'Français' : 'العربية'}
               </button>
@@ -168,7 +166,7 @@ export default function DashboardLayout({ user, onLogout, currency, theme: curre
             {/* Theme Toggle Button */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-750 transition-all"
+              className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700/80 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-750 transition-all"
               title="Toggle Theme"
             >
               {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
