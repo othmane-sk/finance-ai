@@ -1,0 +1,17 @@
+@import 'tailwindcss';
+@variant dark (&:where(.dark, .dark *));
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+@source '../**/*.jsx';
+
+@theme {
+    --font-sans: 'Plus Jakarta Sans', 'Outfit', ui-sans-serif, system-ui, sans-serif;
+}
+@keyframes loading-bar {
+  0% { transform: translateX(-150%); }
+  50% { transform: translateX(150%); }
+  100% { transform: translateX(-150%); }
+}
